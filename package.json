@@ -14,6 +14,14 @@
     "models",
     "API"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brianpetro/smart-embed.git"
+  },
+  "bugs": {
+    "url": "https://github.com/brianpetro/smart-embed/issues"
+  },
+  "homepage": "https://github.com/brianpetro/smart-embed#readme",
   "author": "WFH Brian (Brian Petro)",
   "license": "MIT",
   "devDependencies": {
