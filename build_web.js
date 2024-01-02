@@ -3,7 +3,7 @@ const esbuild = require('esbuild');
 const web_connector = {};
 (async () => {
   const smart_embed_transformers_web_adapter = await esbuild.build({
-    entryPoints: ['smart-embed/smart_embed_web.js'],
+    entryPoints: ['smart_embed_web.js'],
     format: 'cjs',
     // format: 'esm',
     bundle: true,
@@ -19,6 +19,6 @@ const web_connector = {};
     ],
   });
   web_connector['script'] = smart_embed_transformers_web_adapter.outputFiles[0].text;
-  fs.writeFileSync('smart-embed/web_connector.json', JSON.stringify(web_connector, null, 2));
+  fs.writeFileSync('web_connector.json', JSON.stringify(web_connector, null, 2));
   console.log('Compiled web_connector.json');
 })();

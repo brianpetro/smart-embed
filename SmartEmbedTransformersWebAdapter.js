@@ -72,24 +72,7 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
       return item;
     });
   }
-  embed(input, timeout = 60000) {
-    this.frame.contentWindow.postMessage({ type: "smart_embed", embed_input: input }, "*");
-    return new Promise((resolve, reject) => {
-      this.response_handlers[input] = ({ error, data }) => {
-        if (error) {
-          console.log(error);
-          reject(error);
-        }
-        else resolve(data);
-      };
-      setTimeout(() => {
-        if (this.response_handlers[input]) {
-          reject();
-          delete this.response_handlers[input];
-        }
-      }, timeout);
-    });
-  }
+  embed(input) { return this.request_embedding(input); }
   count_tokens(input, timeout = 60000) {
     this.frame.contentWindow.postMessage({ type: "smart_embed_token_ct", embed_input: input }, "*");
     return new Promise((resolve, reject) => {

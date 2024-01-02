@@ -49,7 +49,7 @@ class SmartEmbedTransformersWebConnector extends SmartEmbedTransformersNodeAdapt
     }else{
       if (!this.timestamp) this.timestamp = Date.now();
       const send_data = await this.embed(embed_input);
-      send_data.type = "smart_embed";
+      send_data.type = "smart_embed_resp";
       if (handler_id) send_data.handler_id = handler_id;
       this.window.postMessage(send_data, "*");
       this.tokens += send_data.tokens;
