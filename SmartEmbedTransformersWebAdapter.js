@@ -26,6 +26,9 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
     this.frame = this.container.querySelector("#smart_embed_transformers");
     if(!this.frame) {
       this.frame = document.createElement("iframe");
+      this.frame.style.display = "none";
+      this.frame.style.width = "0";
+      this.frame.style.height = "0";
       this.frame.id = "smart_embed_transformers";
       this.frame_loaded = new Promise(resolve => this.frame.onload = resolve); // wait for iframe to load
       const model_loaded = new Promise(resolve => {
@@ -36,8 +39,6 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
           }
         }, { once: true, capture: false });
       });
-      this.frame.style.width = "0";
-      this.frame.style.height = "0";
       const blob = new Blob([this.iframe_script], { type: 'text/html' });
       this.frame.src = URL.createObjectURL(blob);
       this.container.appendChild(this.frame);
