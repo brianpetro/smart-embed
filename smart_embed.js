@@ -77,14 +77,17 @@ class SmartEmbedOpenAIAdapter extends SmartEmbedApiAdapter {
 class SmartEmbedAdaApi extends SmartEmbedOpenAIAdapter {
   get model_name() { return "text-embedding-ada-002"; }
   get batch_size() { return 50; }
+  get dims() { return 1536; }
 }
 class SmartEmbedBgeSmallWeb extends SmartEmbedTransformersWebAdapter {
   get model_name() { return "Xenova/bge-small-en-v1.5"; }
   get batch_size() { return 5; }
+  get dims() { return 384; }
 }
 class SmartEmbedBgeSmallNode extends SmartEmbedTransformersNodeAdapter {
   get model_name() { return "Xenova/bge-small-en-v1.5"; }
   get batch_size() { return 5; }
+  get dims() { return 384; }
 }
 exports.SmartEmbedAdaApi = SmartEmbedAdaApi;
 exports.SmartEmbedBgeSmallNode = SmartEmbedBgeSmallNode;

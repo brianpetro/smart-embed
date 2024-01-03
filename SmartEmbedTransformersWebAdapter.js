@@ -15,10 +15,18 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
     await adapter.init();
     return adapter;
   }
+  unload() {
+    console.log("SmartEmbedTransformersWebAdapter Unloading");
+    this.remove_frame();
+    this.frame = null;
+    this.output = {};
+    this.response_handlers = {};
+  }
   async init() {
     this.frame = this.container.querySelector("#smart_embed_transformers");
     if(!this.frame) {
       this.frame = document.createElement("iframe");
+      // this.frame = document.createElement("webview");
       this.frame.id = "smart_embed_transformers";
       this.frame_loaded = new Promise(resolve => this.frame.onload = resolve); // wait for iframe to load
       const model_loaded = new Promise(resolve => {
