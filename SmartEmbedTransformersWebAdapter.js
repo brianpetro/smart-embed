@@ -26,7 +26,6 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
     this.frame = this.container.querySelector("#smart_embed_transformers");
     if(!this.frame) {
       this.frame = document.createElement("iframe");
-      // this.frame = document.createElement("webview");
       this.frame.id = "smart_embed_transformers";
       this.frame_loaded = new Promise(resolve => this.frame.onload = resolve); // wait for iframe to load
       const model_loaded = new Promise(resolve => {
