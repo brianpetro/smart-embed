@@ -36,7 +36,7 @@ class SmartEmbedTransformersNodeAdapter extends SmartEmbed {
         item.error = error;
         return item;
       }
-      item.vec = vec;
+      item.vec = vec.map(val => Math.round(val * 100000000) / 100000000); // reduce precision to 8 decimal places ref: https://wfhbrian.com/vector-dimension-precision-effect-on-cosine-similarity/
       item.tokens = tokens;
       return item;
     }));
@@ -50,7 +50,7 @@ class SmartEmbedTransformersNodeAdapter extends SmartEmbed {
       if (output.tokens < 1) return { ...output, error: "Input too short." };
       if (output.tokens < 512) {
         const embedding = await this.model(input, { pooling: 'mean', normalize: true });
-        output.vec = Array.from(embedding.data);
+        output.vec = Array.from(embedding.data).map(val => Math.round(val * 100000000) / 100000000); // reduce precision to 8 decimal places ref: https://wfhbrian.com/vector-dimension-precision-effect-on-cosine-similarity/
       } else {
         const pct = 512 / output.tokens; // get pct of input to keep
         const max_chars = Math.floor(input.length * pct * 0.95); // get number of characters to keep (minus 5% for safety)
