@@ -1,0 +1,69 @@
+const { SmartEmbedApiAdapter } = require("./SmartEmbedApiAdapter");
+
+// const { encoding_for_model } = require("tiktoken"); // issues with esbuild
+class SmartEmbedOpenAIAdapter extends SmartEmbedApiAdapter {
+  async count_tokens(input) {
+    return this.tokenizer.encode(input).length;
+  }
+  async embed(input) {
+    const response = await this.request_embedding(input);
+    const vec = response.data[0].embedding;
+    const tokens = response.usage.total_tokens;
+    return { vec, tokens };
+  }
+  async embed_batch(items) {
+    const response = await this.request_embedding(items.map(item => item.embed_input));
+    const total_tokens = response.usage.total_tokens;
+    const total_chars = items.reduce((acc, item) => acc + item.embed_input.length, 0);
+    return items.map((item, i) => {
+      item.vec = response.data[i].embedding;
+      item.tokens = Math.round((item.embed_input.length / total_chars) * total_tokens);
+      return item;
+    });
+  }
+  async request_embedding(embed_input, retries = 0) {
+    const {
+      url_first,
+    } = this.opts;
+    // check if embed_input is empty
+    if (embed_input.length === 0) {
+      console.log("embed_input is empty");
+      return null;
+    }
+    const body = {
+      model: this.model_name,
+      input: embed_input,
+    };
+    if (this.model_name.startsWith("text-embedding-3")) {
+      body.dimensions = this.dims;
+    }
+    const request = {
+      url: `https://api.openai.com/v1/embeddings`,
+      method: "POST",
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${this.api_key}`
+      }
+    };
+    try {
+      const args = (url_first) ? [request.url, request] : [request];
+      const resp = await this.http_request_adapter(...args);
+      const json = (typeof resp.json === 'function') ? await resp.json() : await resp.json;
+      if (!json.data) throw resp;
+      if (!json.usage) throw resp;
+      return json;
+    } catch (error) {
+      // retry request if error is 429
+      if ((error.status === 429) && (retries < 3)) {
+        const backoff = Math.pow(retries + 1, 2); // exponential backoff
+        console.log(`retrying request (429) in ${backoff} seconds...`);
+        await new Promise(r => setTimeout(r, 1000 * backoff));
+        return await this.request_embedding(embed_input, retries + 1);
+      }
+      console.log(error);
+      return null;
+    }
+  }
+}
+exports.SmartEmbedOpenAIAdapter = SmartEmbedOpenAIAdapter;

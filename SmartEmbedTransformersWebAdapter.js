@@ -2,18 +2,13 @@ const { md5 } = require('../smart-collections/helpers');
 const { SmartEmbed } = require('./SmartEmbed');
 
 class SmartEmbedTransformersWebAdapter extends SmartEmbed {
-  constructor() {
-    super();
+  constructor(model_config_key, container, web_script) {
+    super(model_config_key);
     this.frame = null;
     this.output = {};
     this.response_handlers = {};
-  }
-  static async create(container, web_script) {
-    const adapter = new this();
-    adapter.container = container; // iframe container
-    adapter.web_script = web_script; // web script to load in iframe
-    await adapter.init();
-    return adapter;
+    this.container = container; // iframe container
+    this.web_script = web_script; // web script to load in iframe
   }
   unload() {
     console.log("SmartEmbedTransformersWebAdapter Unloading");
@@ -23,27 +18,28 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
     this.response_handlers = {};
   }
   async init() {
-    this.frame = this.container.querySelector("#smart_embed_transformers");
+    this.frame = this.container.querySelector("#" + this.container_id);
     if(!this.frame) {
       this.frame = document.createElement("iframe");
       this.frame.style.display = "none";
       this.frame.style.width = "0";
       this.frame.style.height = "0";
-      this.frame.id = "smart_embed_transformers";
+      this.frame.id = this.container_id;
       this.frame_loaded = new Promise(resolve => this.frame.onload = resolve); // wait for iframe to load
       const model_loaded = new Promise(resolve => {
         window.addEventListener("message", event => {
           if (event.data.type === "model_loaded"){
-            console.log("Model Loaded");
+            console.log("Model Loaded: " + this.model_name);
             resolve();
           }
         }, { once: true, capture: false });
       });
-      const blob = new Blob([this.iframe_script], { type: 'text/html' });
-      this.frame.src = URL.createObjectURL(blob);
+      // const blob = new Blob([this.iframe_script], { type: 'text/html' });
+      // this.frame.src = URL.createObjectURL(blob);
+      this.frame.srcdoc = this.iframe_script;
       this.container.appendChild(this.frame);
       await this.frame_loaded; // wait for iframe to load
-      this.frame.contentWindow.postMessage({ type: "init", model_name: this.model_name }, "*"); // send init message to iframe
+      this.frame.contentWindow.postMessage({ type: "init", model_config_key: this.model_config_key }, "*"); // send init message to iframe
       await model_loaded; // wait for model to load
       this.frame.contentWindow.addEventListener("message", this.handle_iframe_messages.bind(this), false);
     }
@@ -103,9 +99,10 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
   get iframe_script() { return `<script type="module">${this.web_script}</script>`; }
   get is_embedding() { return Object.keys(this.response_handlers).length > 0; }
   get queue_length() { return Object.keys(this.response_handlers).length; }
+  get container_id() { return this.model_name.replace(/[^a-z0-9]/gi, '_').toLowerCase(); }
   remove_frame() {
     if (this.frame) this.frame.remove();
-    const frame_check = this.container.querySelector("#smart_embed_transformers");
+    const frame_check = this.container.querySelector("#" + this.container_id);
     if (frame_check) frame_check.remove();
     console.log("SmartEmbedTransformersWebAdapter Disconnected");
   }
@@ -120,3 +117,4 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
   }
 }
 exports.SmartEmbedTransformersWebAdapter = SmartEmbedTransformersWebAdapter;
+exports.SmartEmbedLocalAdapter = SmartEmbedTransformersWebAdapter; // alias

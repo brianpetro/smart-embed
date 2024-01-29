@@ -1,12 +1,13 @@
 const { SmartEmbedTransformersNodeAdapter } = require('./SmartEmbedTransformersNodeAdapter');
+const models = require('./models');
 
 // CONNECTOR FOR OBSIDIAN
 class SmartEmbedTransformersWebConnector extends SmartEmbedTransformersNodeAdapter {
-  constructor() {
-    super();
+  constructor(model_config_key, window) {
+    super(model_config_key);
     this.model = null;
     this.running_init = false;
-    this.window = null;
+    this.window = window;
     // stats
     this.embed_ct = 0;
     this.timestamp = null;
@@ -17,7 +18,8 @@ class SmartEmbedTransformersWebConnector extends SmartEmbedTransformersNodeAdapt
     if (this.running_init) await new Promise(resolve => setTimeout(resolve, 3000));
     if (!this.model && !this.running_init) this.running_init = true;
     console.log("Loading Smart Local Model");
-    const { pipeline, env, AutoTokenizer } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.13.0');
+    // const { pipeline, env, AutoTokenizer } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.13.0');
+    const { pipeline, env, AutoTokenizer } = await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@latest');
     env.allowLocalModels = false;
     this.model = await pipeline('feature-extraction', this.model_name, { quantized: true });
     this.tokenizer = await AutoTokenizer.from_pretrained(this.model_name);
