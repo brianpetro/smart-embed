@@ -27,6 +27,7 @@ class SmartEmbed {
   async embed_batch(input) { }
   get batch_size() { return this.config.batch_size; }
   get dims() { return this.config.dims; }
+  get max_tokens() { return this.config.max_tokens; }
   get model_name() { return this.config.model_name; }
 }
 
