@@ -19,6 +19,10 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
   }
   async init() {
     this.frame = this.container.querySelector("#" + this.container_id);
+    if(this.frame) {
+      this.frame.remove();
+      this.frame = null;
+    }
     if(!this.frame) {
       this.frame = document.createElement("iframe");
       this.frame.style.display = "none";
