@@ -18,17 +18,13 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
     this.response_handlers = {};
   }
   async init() {
-    this.frame = this.container.querySelector("#" + this.container_id);
-    if(this.frame) {
-      this.frame.remove();
-      this.frame = null;
-    }
+    // this.frame = this.container.querySelector("#" + this.container_id);
     if(!this.frame) {
       this.frame = document.createElement("iframe");
       this.frame.style.display = "none";
       this.frame.style.width = "0";
       this.frame.style.height = "0";
-      this.frame.id = this.container_id;
+      // this.frame.id = this.container_id;
       this.frame_loaded = new Promise(resolve => this.frame.onload = resolve); // wait for iframe to load
       const model_loaded = new Promise(resolve => {
         window.addEventListener("message", event => {
@@ -38,8 +34,6 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
           }
         }, { once: true, capture: false });
       });
-      // const blob = new Blob([this.iframe_script], { type: 'text/html' });
-      // this.frame.src = URL.createObjectURL(blob);
       this.frame.srcdoc = this.iframe_script;
       this.container.appendChild(this.frame);
       await this.frame_loaded; // wait for iframe to load
