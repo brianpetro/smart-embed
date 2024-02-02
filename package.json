@@ -1,6 +1,6 @@
 {
   "name": "smart-embed",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Convenient interface for utilizing various embedding models via API and locally.",
   "main": "smart_embed.js",
   "scripts": {
