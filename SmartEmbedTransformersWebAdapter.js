@@ -72,6 +72,8 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
     });
   }
   async embed_batch(items) {
+    items = items.filter(item => item.embed_input?.length > 0);
+    if(!items?.length) return [];
     const resp = await this.request_embedding(items.map(item => ({ embed_input: item.embed_input })));
     return items.map((item, i) => {
       const resp_item = resp.data[i];

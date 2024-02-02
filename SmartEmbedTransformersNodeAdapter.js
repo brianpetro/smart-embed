@@ -10,6 +10,8 @@ class SmartEmbedTransformersNodeAdapter extends SmartEmbed {
     this.tokenizer = await AutoTokenizer.from_pretrained(this.model_name);
   }
   async embed_batch(items) {
+    items = items.filter(item => item.embed_input?.length > 0); // remove items with empty embed_input (causes .split() error)
+    if(!items?.length) return [];
     const tokens = await Promise.all(items.map(item => this.count_tokens(item.embed_input)));
     const embed_input = await Promise.all(items.map(async (item, i) => {
       if (tokens[i] < this.config.max_tokens) return item.embed_input;
@@ -63,7 +65,7 @@ class SmartEmbedTransformersNodeAdapter extends SmartEmbed {
     }));
   }
   async embed(input) {
-    const output = { text: input };
+    const output = { embed_input: input };
     if (!input) return { ...output, error: "No input text." };
     if (!this.model) await this.init();
     try {
