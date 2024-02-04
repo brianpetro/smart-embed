@@ -1,4 +1,4 @@
-const { md5 } = require('../smart-collections/helpers');
+const { create_uid } = require('../smart-collections/helpers');
 const { SmartEmbed } = require('./SmartEmbed');
 
 class SmartEmbedTransformersWebAdapter extends SmartEmbed {
@@ -45,8 +45,8 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
     console.log("SmartEmbedTransformersWebAdapter Connected");
   }
   request_embedding(embed_input, retries = 0) {
-    if (embed_input.length === 0) return console.log("embed_input is empty"); // check if embed_input is empty
-    const handler_id = (typeof embed_input === "string") ? embed_input : md5(JSON.stringify(embed_input));
+    if (!embed_input?.length) return console.log("embed_input is empty"); // check if embed_input is empty
+    const handler_id = (typeof embed_input === "string") ? embed_input : create_uid(embed_input);
     this.frame.contentWindow.postMessage({ type: "smart_embed", embed_input, handler_id }, "*");
     return new Promise((resolve, reject) => {
       this.response_handlers[handler_id] = ({ error, data }) => {
