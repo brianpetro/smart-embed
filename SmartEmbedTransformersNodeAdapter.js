@@ -42,7 +42,7 @@ class SmartEmbedTransformersNodeAdapter extends SmartEmbed {
       console.log(err);
       console.log("Error embedding batch. Trying one at a time...");
     }
-    return await Promise.all(items.map(async item => {
+    const resp = await Promise.all(items.map(async item => {
       const { vec, tokens, error } = await this.embed(item.embed_input);
       if(error){
         console.log("Error embedding item: ", item.key);
@@ -63,6 +63,7 @@ class SmartEmbedTransformersNodeAdapter extends SmartEmbed {
       item.tokens = tokens;
       return item;
     }));
+    return resp;
   }
   async embed(input) {
     const output = { embed_input: input };

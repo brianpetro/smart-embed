@@ -3,6 +3,10 @@ class SmartEmbed {
   constructor(model_config_key) {
     this.model_config_key = model_config_key;
     this.config = models[this.model_config_key];
+    // stats
+    this.embed_ct = 0;
+    this.timestamp = null;
+    this.tokens = 0;
   }
   static async create(model_config_key, ...args) {
     const adapter = new this(model_config_key, ...args);

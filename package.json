@@ -25,12 +25,12 @@
   "author": "WFH Brian (Brian Petro)",
   "license": "MIT",
   "devDependencies": {
-    "@xenova/transformers": "latest",
     "ava": "^6.0.1",
     "dotenv": "^16.3.1",
     "esbuild": "^0.19.11"
   },
   "dependencies": {
+    "@xenova/transformers": "latest",
     "js-tiktoken": "^1.0.10"
   }
 }
