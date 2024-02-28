@@ -1,5 +1,5 @@
 const { SmartEmbed } = require('./SmartEmbed');
-const { SmartSocket } = require('../sc-2/src/smart_socket');
+const { SmartSocket } = require('./smart_socket');
 class SmartEmbedSocket extends SmartSocket {
   constructor(port, model_config_key) {
     super(port);
