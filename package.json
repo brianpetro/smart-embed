@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "@xenova/transformers": "latest",
-    "js-tiktoken": "^1.0.10"
+    "js-tiktoken": "^1.0.10",
+    "smart-collections": "file:../smart-collections"
   }
 }
