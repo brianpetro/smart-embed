@@ -1,4 +1,4 @@
-const { create_uid } = require('../smart-collections/helpers');
+const { create_uid } = require('smart-collections/helpers');
 const { SmartEmbed } = require('./SmartEmbed');
 
 class SmartEmbedTransformersWebAdapter extends SmartEmbed {
