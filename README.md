@@ -1,5 +1,5 @@
 # Smart Embed
-Conveniently embed content with a standardized interface that works with various local and remote embedding models.
+Smart Embed is a library that provides a standardized interface for embedding content. It supports various local and remote embedding models, making it a versatile tool for your development needs.
 
 ```mermaid
 graph TD
