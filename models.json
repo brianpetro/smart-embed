@@ -44,6 +44,15 @@
     "description": "Local, 8,192 tokens, 512 dim",
     "type": "huggingface-transformers"
   },
+  "Xenova/jina-embeddings-v2-base-zh-8192": {
+    "model_name": "Xenova/jina-embeddings-v2-base-zh",
+    "batch_size": 1,
+    "dims": 512,
+    "max_tokens": 8192,
+    "name": "Jina-v2-base-zh-8K",
+    "description": "Local, 8,192 tokens, 512 dim, Chinese/English bilingual",
+    "type": "huggingface-transformers"
+  },
   "text-embedding-3-small": {
     "model_name": "text-embedding-3-small",
     "batch_size": 50,
