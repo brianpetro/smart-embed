@@ -1,9 +1,9 @@
 const { SmartEmbed } = require('./SmartEmbed');
 const { SmartSocket } = require('./smart_socket');
 class SmartEmbedSocket extends SmartSocket {
-  constructor(port, model_config_key) {
+  constructor(port, model_config) {
     super(port);
-    this.model_config_key = model_config_key;
+    this.model_config = model_config;
     this.handlers = {};
   }
   handle_message(event) {
@@ -15,7 +15,7 @@ class SmartEmbedSocket extends SmartSocket {
   }
   send(data) {
     if(typeof data !== 'object') return console.error('Data must be an object');
-    data.model_config_key = this.model_config_key; 
+    data.model_config = this.model_config; 
     data = JSON.stringify(data);
     this.ws.send(data);
   }
@@ -24,9 +24,9 @@ class SmartEmbedSocket extends SmartSocket {
 
 class SmartEmbedWebSocketConnector extends SmartEmbed {
   async init() {
-    this.ws = new SmartEmbedSocket(42424, this.model_config_key);
+    this.ws = new SmartEmbedSocket(42424, this.config);
     await this.ws.connect_to_websocket();
-    this.ws.send({ type: 'init', model_config_key: this.model_config_key });
+    this.ws.send({ type: 'init', model_config: this.config });
   }
   async embed_batch(items) {
     items = items.filter(item => item.embed_input?.length > 0);
