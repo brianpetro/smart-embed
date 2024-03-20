@@ -37,7 +37,7 @@ class SmartEmbedTransformersWebAdapter extends SmartEmbed {
       this.frame.srcdoc = this.iframe_script;
       this.container.appendChild(this.frame);
       await this.frame_loaded; // wait for iframe to load
-      this.frame.contentWindow.postMessage({ type: "init", model_config_key: this.model_config_key }, "*"); // send init message to iframe
+      this.frame.contentWindow.postMessage({ type: "init", model_config_key: this.config }, "*"); // send init message to iframe
       await model_loaded; // wait for model to load
       this.frame.contentWindow.addEventListener("message", this.handle_iframe_messages.bind(this), false);
     }

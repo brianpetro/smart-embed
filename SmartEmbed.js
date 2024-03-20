@@ -1,8 +1,12 @@
 const models = require('./models');
 class SmartEmbed {
-  constructor(model_config_key) {
-    this.model_config_key = model_config_key;
-    this.config = models[this.model_config_key];
+  constructor(model) {
+    if(typeof model === 'object') {
+      this.config = {...model};
+    }else{
+      this.model_config_key = model;
+      this.config = models[this.model_config_key];
+    }
     // stats
     this.embed_ct = 0;
     this.timestamp = null;
