@@ -25,7 +25,7 @@ class SmartEmbedSocket extends SmartSocket {
 class SmartEmbedWebSocketConnector extends SmartEmbed {
   async init() {
     this.ws = new SmartEmbedSocket(42424, this.config);
-    await this.ws.connect_to_websocket();
+    await this.ws.connect();
     this.ws.send({ type: 'init', model_config: this.config });
   }
   async embed_batch(items) {
