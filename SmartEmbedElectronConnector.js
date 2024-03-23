@@ -2,7 +2,7 @@ const { ipcRenderer } = require('electron');
 const { SmartEmbed } = require('./SmartEmbed');
 class SmartEmbedElectronConnector extends SmartEmbed {
   async init(){
-    await ipcRenderer.invoke('smart-embed-init', this.model_config_key);
+    await ipcRenderer.invoke('smart-embed-init', this.config);
   }
   // embed_batch(items) { return ipcRenderer.invoke('smart-embed-batch', items); }
   async embed_batch(items) {
@@ -11,7 +11,7 @@ class SmartEmbedElectronConnector extends SmartEmbed {
     // const resp = await this.request_embedding(items.map(item => ({ embed_input: item.embed_input })));
     if(!this.timestamp) this.timestamp = Date.now();
     const resp = await ipcRenderer.invoke('smart-embed-batch', {
-      model_config_key: this.model_config_key,
+      model_config: this.config,
       input: items.map(item => ({ embed_input: item.embed_input }))
     });
     this.tokens += resp.reduce((acc, item) => acc + item.tokens, 0);
@@ -31,11 +31,11 @@ class SmartEmbedElectronConnector extends SmartEmbed {
     });
   }
   async embed(input) { return await ipcRenderer.invoke('smart-embed', {
-    model_config_key: this.model_config_key,
+    model_config: this.config,
     input,
   }); }
   async count_tokens(input) { return await ipcRenderer.invoke('smart-embed-token-ct', {
-    model_config_key: this.model_config_key,
+    model_config: this.config,
     input,
   }); }
 }
