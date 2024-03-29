@@ -23,8 +23,8 @@ class SmartEmbedTransformersNodeAdapter extends SmartEmbed {
         truncated_input = truncated_input.substring(0, max_chars) + "...";
         token_ct = await this.count_tokens(truncated_input);
       }
-      console.log("Input too long. Truncating to ", truncated_input.length, " characters.");
-      console.log("Tokens: ", tokens[i], " -> ", token_ct);
+      // console.log("Input too long. Truncating to ", truncated_input.length, " characters.");
+      // console.log("Tokens: ", tokens[i], " -> ", token_ct);
       tokens[i] = token_ct;
       return truncated_input;
     }));

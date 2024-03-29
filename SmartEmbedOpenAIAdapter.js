@@ -73,8 +73,8 @@ class SmartEmbedOpenAIAdapter extends SmartEmbedApiAdapter {
       const args = (url_first) ? [request.url, request] : [request];
       const resp = await this.http_request_adapter(...args);
       const json = (typeof resp.json === 'function') ? await resp.json() : await resp.json;
-      if (!json.data) throw resp;
-      if (!json.usage) throw resp;
+      if (!json.data) throw resp; // OpenAI specific
+      if (!json.usage) throw resp; // OpenAI specific
       return json;
     } catch (error) {
       // retry request if error is 429

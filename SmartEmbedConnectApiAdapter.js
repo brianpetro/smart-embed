@@ -3,22 +3,17 @@ class SmartEmbedConnectApiAdapter extends SmartEmbedApiAdapter {
   async embed_batch(items) {
     items = items.filter(item => item.embed_input?.length > 0); // remove items with empty embed_input (causes 400 error)
     if(items.length === 0) return console.log("empty batch (or all items have empty embed_input)");
-    // const embed_inputs = items.map(item => {
-    //   item.total_tokens = this.count_tokens(item.embed_input);
-    //   if(item.total_tokens < this.max_tokens) return item.embed_input;
-    //   console.log("total tokens exceeds max_tokens", item.total_tokens);
-    //   const truncated_input = this.tokenizer.decode(this.tokenizer.encode(item.embed_input).slice(0, this.max_tokens - 20)) + '...'; // leave room for 200 tokens (buffer)
-    //   return truncated_input;
-    // });
+    const max_chars = this.max_tokens * 5; // estimate max chars based on max tokens
+    const embed_inputs = items.map(item => {
+      if(item.embed_input.length > max_chars) return { embed_input: item.embed_input.slice(0, max_chars) };
+      return { embed_input: item.embed_input };
+    });
+    // console.log(embed_inputs);
     const response = await this.request_embedding(embed_inputs);
-    if(!response) {
-      console.log(items);
-    }
-    const total_tokens = response.usage.total_tokens;
-    const total_chars = items.reduce((acc, item) => acc + item.embed_input.length, 0);
+    if(!response) console.log(items);
     return items.map((item, i) => {
       item.vec = response[i].vec;
-      // item.tokens = Math.round((item.embed_input.length / total_chars) * total_tokens);
+      item.tokens = response[i].tokens;
       return item;
     });
   }
@@ -35,8 +30,9 @@ class SmartEmbedConnectApiAdapter extends SmartEmbedApiAdapter {
       model_config: this.config,
       input: embed_input,
     };
+    // console.log(body);
     const request = {
-      url: `http://localhost:37420/embed_batch`,
+      url: `http://localhost:37421/embed_batch`,
       method: "POST",
       body: JSON.stringify(body),
       headers: {
@@ -48,8 +44,6 @@ class SmartEmbedConnectApiAdapter extends SmartEmbedApiAdapter {
       const args = (url_first) ? [request.url, request] : [request];
       const resp = await this.http_request_adapter(...args);
       const json = (typeof resp.json === 'function') ? await resp.json() : await resp.json;
-      if (!json.data) throw resp;
-      if (!json.usage) throw resp;
       return json;
     } catch (error) {
       // retry request if error is 429
